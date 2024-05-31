@@ -10,10 +10,11 @@ export default defineConfig({
   ],
   server: {
     proxy: {
-      '/stream': {
+      '/ques': {
         target: 'http://localhost:8080', // 你的后端服务地址
         changeOrigin: true,
-        
+        secure: false,
+        rewrite: (path) => path.replace(/^\/ques/, '/ques')
       }
     }
   },

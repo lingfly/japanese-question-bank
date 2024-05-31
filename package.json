@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@microsoft/fetch-event-source": "^2.0.1",
+    "axios": "^1.7.2",
     "vue": "^3.4.21",
     "vue-router": "^4.0.13"
   },

@@ -1,18 +1,6 @@
 <template>
-  <div class="create-question">
+  <AddQuestion />
 
-    <form @submit.prevent="createQustion">
-      <div class="form-group">
-        <label for="question-title">问题标题:</label>
-        <input type="text" id="question-title" v-model="question.title" required />
-      </div>
-      <div class="form-group">
-        <label for="question-description">问题描述:</label>
-        <textarea id="question-description" v-model="question.description" required></textarea>
-      </div>
-      <button type="submit">提交</button>
-    </form>
-  </div>
   <div class="question-list">
     <div v-for="question in questions" :key="question.id" :question="question">
       <h2>{{ question.title }}</h2>
@@ -22,40 +10,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-class Question {
-  id: number;
-  title: string;
-  description: string;
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
+import Question from '@/types'
+import AddQuestion from '@/components/AddQuestion.vue'
 
-  constructor(id: number, title: string, description: string) {
-    this.id = id;
-    this.title = title;
-    this.description = description;
+// 获取问题列表
+const questions = ref<Question[]>();
+const fetchQuestions = async () => {
+  try {
+    const response = await axios.post('/ques/list', {});
+    questions.value = response.data;
+  } catch (error) {
+    console.error('Failed to fetch questions:', error);
   }
+};
 
-}
-function newQuestion(src:Question ): Question {
-  return new Question(src.id, src.title, src.description);
-}
-const questions = ref<Question[]>([]);
-const question = ref<Question>({
-  id: 0,
-  title: '',
-  description: ''
+// 组件加载时获取问题列表
+onMounted(() => {
+  fetchQuestions();
 });
-questions.value = [
-  { id: 1, title: '题目1', description: '这是题目1的描述' },
-  { id: 2, title: '题目2', description: '这是题目2的描述' },
-  { id: 3, title: '题目3', description: '这是题目3的描述' },
-];
-let id = 4;
-function createQustion() {
-  question.value.id = id++;
-  questions.value.push(newQuestion(question.value));
-  question.value.title = '';
-  question.value.description = '';
-}
 
 
 
@@ -68,9 +42,5 @@ function createQustion() {
   text-align: left;
 }
 
-.create-question {
-  text-align: left;
-  margin: 0 auto;
-  max-width: 600px;
-}
+
 </style>

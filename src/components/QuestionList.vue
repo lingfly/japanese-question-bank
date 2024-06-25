@@ -1,5 +1,4 @@
 <template>
-  <AddQuestion />
 
   <div v-if="questions.length">
     <h3>问题列表：</h3>

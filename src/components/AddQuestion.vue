@@ -56,7 +56,7 @@ const newQuestion = ref < Question > ({
     answer: 0,
     explanation: ''
 });
-const questions = ref([]);
+const questions = ref<Question[]>([]);
 
 const submitForm = async () => {
     if (newQuestion.value.description.trim()) {

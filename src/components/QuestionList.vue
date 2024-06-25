@@ -1,22 +1,33 @@
 <template>
   <AddQuestion />
 
-  <div class="question-list">
-    <div v-for="question in questions" :key="question.id" :question="question">
-      <h2>{{ question.title }}</h2>
-      <p>{{ question.description }}</p>
-    </div>
+  <div v-if="questions.length">
+    <h3>问题列表：</h3>
+    <ul>
+      <li v-for="(question, index) in questions" :key="index">
+        <div>
+          <h4>问题 {{ index + 1 }}: {{ question.description }}</h4>
+          <ul>
+            <li v-for="(option, optIndex) in question.options" :key="optIndex">
+              选项 {{ optIndex + 1 }}: {{ option }}
+            </li>
+          </ul>
+          <p>正确答案: 选项 {{ question.answer + 1 }}</p>
+          <p>解释: {{ question.explanation }}</p>
+        </div>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import Question from '@/types'
+import { type Question } from '@/types'
 import AddQuestion from '@/components/AddQuestion.vue'
 
 // 获取问题列表
-const questions = ref<Question[]>();
+const questions = ref<Question[]>([]);
 const fetchQuestions = async () => {
   try {
     const response = await axios.post('/ques/list', {});
@@ -41,6 +52,4 @@ onMounted(() => {
   margin: 0 auto;
   text-align: left;
 }
-
-
 </style>

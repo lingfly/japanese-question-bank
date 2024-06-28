@@ -2,8 +2,11 @@
   <a-list item-layout="vertical" :data-source="questions">
     <template #renderItem="{ item, index }">
       <a-list-item>
-        <a-card hoverable >
-          <a-card :title="item.description" :bordered="false">
+        <a-card hoverable>
+          <a-card :bordered="false">
+            <template #title>
+              <span v-html="item.description"></span>
+            </template>
           </a-card>
           <a-card>
             <a-radio-group v-model:value="selectedValues[index]" name="radioGroup">
@@ -58,7 +61,8 @@ const questions = ref<Question[]>([
       "4. つうづんで"
     ],
     answer: 1,
-    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上"
+    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上",
+    keyword: "包んで",
   },
   {
     description: "プレゼントはきれいな紙で包んであった。",
@@ -69,11 +73,12 @@ const questions = ref<Question[]>([
       "4. つうづんで"
     ],
     answer: 1,
-    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上"
+    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上",
+    keyword: "包んで",
   },
 ]);
 const selectedValues = ref<{ [key: number]: number | null }>({});
-const isShows = ref<boolean[]>([]); 
+const isShows = ref<boolean[]>([]);
 questions.value.forEach((_, index) => {
   selectedValues.value[index] = null;
 })
@@ -86,13 +91,18 @@ const fetchQuestions = async () => {
     console.error('Failed to fetch questions:', error);
   }
 };
- const explain = (index : number) => {
+const explain = (index: number) => {
   isShows.value[index] = true;
- }
+}
 
 // 组件加载时获取问题列表
 onMounted(() => {
   // fetchQuestions();
+
+  // 关键字加下划线
+  questions.value.forEach((item)=>{
+    item.description = item.description.replace(item.keyword, "<u>" + item.keyword + "</u>");
+  })
 });
 
 
@@ -114,11 +124,15 @@ onMounted(() => {
 .correct-answer p {
   margin-right: 8px;
 }
-.center-text{
+
+.center-text {
   text-align: center;
-  margin: 0; /* 移除默认的上下边距 */
+  margin: 0;
+  /* 移除默认的上下边距 */
 }
-.answer-text{
-  white-space: pre-line;
+
+.answer-text {
+  /*文本中的/n自动换行 */
+  white-space: pre-line; 
 }
 </style>

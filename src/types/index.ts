@@ -2,5 +2,6 @@ export interface Question {
     description: string,
     options: string[],
     answer: number,
-    explanation: string
+    explanation: string,
+    keyword: string,
 }

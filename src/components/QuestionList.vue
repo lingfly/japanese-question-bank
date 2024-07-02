@@ -1,138 +1,128 @@
 <template>
-  <a-list item-layout="vertical" :data-source="questions">
-    <template #renderItem="{ item, index }">
-      <a-list-item>
-        <a-card hoverable>
-          <a-card :bordered="false">
-            <template #title>
-              <span v-html="item.description"></span>
-            </template>
-          </a-card>
-          <a-card>
-            <a-radio-group v-model:value="selectedValues[index]" name="radioGroup">
-              <a-radio :style="radioStyle" value="1">{{ item.options[0] }}</a-radio>
-              <a-radio :style="radioStyle" value="2">{{ item.options[1] }}</a-radio>
-              <a-radio :style="radioStyle" value="3">{{ item.options[2] }}</a-radio>
-              <a-radio :style="radioStyle" value="4">{{ item.options[3] }}</a-radio>
-            </a-radio-group>
-          </a-card>
-          <a-card v-if="selectedValues[index] !== null" hoverable>
-            <div v-if="selectedValues[index] == item.answer" class="correct-answer">
-              <p v-if="!isShows[index]" class="center-text">正确</p>
-              <a-button v-if="!isShows[index]" type="primary" @click="explain(index)">解析</a-button>
-              <p v-if="isShows[index]" class="answer-text">{{ item.explanation }}</p>
-            </div>
-            <div v-else>
-              <p>错误！</p>
-              <p class="answer-text">{{ item.explanation }}</p>
-            </div>
-          </a-card>
-        </a-card>
-      </a-list-item>
-    </template>
-  </a-list>
+  <a-collapse  :bordered="false">
+   <a-collapse-panel key="1" header="問題１　____のことばの読み方として最もよいものを、１・２・３・４から一つえらびなさい">
+      <Word :questions="questions"></Word>
+   </a-collapse-panel>
+   <a-collapse-panel key="2" header="問題２　____のことばを漢字で書くとき最もよいものを、１・２・３・４から一つえらびなさい">
+      <Word :questions="questions"></Word>
+   </a-collapse-panel>
+   <a-collapse-panel key="3" header="問題３　（　　）に入れるのに最もよいものを、１・２・３・４から一つえらびなさい">
+      <Word :questions="questions"></Word>
+   </a-collapse-panel>
+ </a-collapse>
 
 </template>
 
-
-
-
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue'
-import axios from 'axios'
-import { type Question } from '@/types'
-import AddQuestion from '@/components/AddQuestion.vue'
-
-
-
-const radioStyle = reactive({
-  display: 'flex',
-  height: '30px',
-  lineHeight: '30px',
-});
-// 获取问题列表
+import Word from '@/components/Word.vue'
+import {ref} from 'vue'
+import { type Question } from '@/types';
 const questions = ref<Question[]>([
-  {
-    description: "プレゼントはきれいな紙で包んであった。",
-    options: [
-      "1. つつんで",
-      "2. つづんで",
-      "3. つうつんで",
-      "4. つうづんで"
-    ],
-    answer: 1,
-    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上",
-    keyword: "包んで",
-  },
-  {
-    description: "プレゼントはきれいな紙で包んであった。",
-    options: [
-      "1. つつんで",
-      "2. つづんで",
-      "3. つうつんで",
-      "4. つうづんで"
-    ],
-    answer: 1,
-    explanation: "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上",
-    keyword: "包んで",
-  },
-]);
-const selectedValues = ref<{ [key: number]: number | null }>({});
-const isShows = ref<boolean[]>([]);
-questions.value.forEach((_, index) => {
-  selectedValues.value[index] = null;
-})
+   {
+       "description": "プレゼントはきれいな紙で包んであった。",
+       "options": [
+           "1. つつんで",
+           "2. つづんで",
+           "3. つうつんで",
+           "4. つうづんで"
+       ],
+       "answer": 1,
+       "explanation": "正解：1\n句意：礼物用漂亮的纸包着。\n解析：包む（つつむ）【他五】包上",
+       "keyword": "包んで"
+   },
+   {
+       "description": "彼はダンスが得意だ。",
+       "options": [
+           "1. どおくい",
+           "2. とおくい",
+           "3. どくい",
+           "4. とくい"
+       ],
+       "answer": 4,
+       "explanation": "正解：4\n句意：他很擅长跳舞。\n解析：得意（とくい）【名词】【形容动词】拿手、擅长",
+       "keyword": "得意"
+   },
+   {
+       "description": "新しい星が発見された。",
+       "options": [
+           "1. はっけん",
+           "2. はけん",
+           "3. はつけん",
+           "4. ばつけん"
+       ],
+       "answer": 1,
+       "explanation": "正解：1\n句意：新的星球被发现了。\n解析：発見（はっけん）【名词】【他サ】发现",
+       "keyword": "発見"
+   },
+   {
+       "description": "このグラフは人口の変化を表しています。",
+       "options": [
+           "1. しめして",
+           "2. ふやして",
+           "3. うごかして",
+           "4. あらわして"
+       ],
+       "answer": 4,
+       "explanation": "正解：4\n句意：这个图表明了人口的变化。\n解析：表す（あらわす）【他五】表示、表现",
+       "keyword": "表して"
+   },
+   {
+       "description": "山田さんから、来週の会議の件で電話がありました。",
+       "options": [
+           "1. けん",
+           "2. あん",
+           "3. ほう",
+           "4. よう"
+       ],
+       "answer": 1,
+       "explanation": "正解：1\n句意：关于下周的会议，山田打来了电话。\n解析：件（けん）【名词】事件、事情",
+       "keyword": "件"
+   },
+   {
+       "description": "通勤にとても時間がかかります。",
+       "options": [
+           "1. つうがく",
+           "2. つうきん",
+           "3. つうやく",
+           "4. つうしん"
+       ],
+       "answer": 2,
+       "explanation": "正解：2\n句意：上下班很花时间。\n解析：通勤（つうきん）【名词】【自サ】通勤、上下班",
+       "keyword": "通勤"
+   },
+   {
+       "description": "この海岸は岩が多い。",
+       "options": [
+           "1. かい",
+           "2. いわ",
+           "3. すな",
+           "4. なみ"
+       ],
+       "answer": 2,
+       "explanation": "正解：2\n句意：这个海岸岩石很多。\n解析：岩（いわ）【名词】岩石、磐石",
+       "keyword": "岩"
+   },
+   {
+       "description": "努力することは大切だと思います。",
+       "options": [
+           "1. どうりょく",
+           "2. とうりょく",
+           "3. どりょく",
+           "4. とりょく"
+       ],
+       "answer": 3,
+       "explanation": "正解：3\n句意：我觉得努力是很重要的。\n解析：努力（どりょく）【名词】【自サ】努力、奋斗",
+       "keyword": "努力"
+   }
+ ]);
 
-const fetchQuestions = async () => {
-  try {
-    const response = await axios.post('/ques/list', {});
-    questions.value = response.data;
-  } catch (error) {
-    console.error('Failed to fetch questions:', error);
-  }
-};
-const explain = (index: number) => {
-  isShows.value[index] = true;
-}
-
-// 组件加载时获取问题列表
-onMounted(() => {
-  // fetchQuestions();
-
-  // 关键字加下划线
-  questions.value.forEach((item)=>{
-    item.description = item.description.replace(item.keyword, "<u>" + item.keyword + "</u>");
-  })
-});
-
-
+//  const fetchQuestions = async () => {
+//   try {
+//     const response = await axios.post('/ques/list', {});
+//     words.value = response.data;
+//   } catch (error) {
+//     console.error('Failed to fetch questions:', error);
+//   }
+// };
 
 </script>
-
-<style scoped>
-.question-list {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: left;
-}
-
-.correct-answer {
-  display: flex;
-  align-items: center;
-}
-
-.correct-answer p {
-  margin-right: 8px;
-}
-
-.center-text {
-  text-align: center;
-  margin: 0;
-  /* 移除默认的上下边距 */
-}
-
-.answer-text {
-  /*文本中的/n自动换行 */
-  white-space: pre-line; 
-}
-</style>

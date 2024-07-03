@@ -11,9 +11,11 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@antv/g6": "^5.0.4",
     "@microsoft/fetch-event-source": "^2.0.1",
     "ant-design-vue": "^4.2.3",
     "axios": "^1.7.2",
+    "require": "^2.4.20",
     "vue": "^3.4.21",
     "vue-router": "^4.0.13"
   },
